@@ -5,6 +5,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
+  <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#input-file-format">Input File Format</a> •  
   <a href="#output-file-format">Output File Format</a> •  
@@ -12,6 +13,8 @@
 
 </p>
 
+## Example Output BAM File in IGV
+![image](./example/figure/example_igv.png)
 
 ## Key Features
 
@@ -42,13 +45,27 @@ $ cd AdeineFootprinter
 
 # Prepare the reference
 # The reference file shuold be in fasta format
-$ python footprinter.py index -r [reference.fa] -o [reference_index.data]
+$ python footprinter.py index \
+  -r [reference.fa] \
+  -o [reference_index.data]
 
 # Analyze nucleosome footprint
 # Using default model
-$ python footprinter.py predict -bed [m6asites.bed] -output [footprint.bam] 
+$ python footprinter.py predict \
+  -bed [m6asites.bed] \
+  -output [footprint.bam] 
+
 # Export the single molecule footprint regions and accessibile genome regions from the bam file
-$ python footprinter.py bamtobed -bam [footprint.bam] -footprint [footprint.bed] -accessible [accessible.bed]
+$ python footprinter.py bamtobed \
+    -bam [footprint.bam] \
+    -footprint [footprint.bed]
+    -accessible [accessible.bed]
+
+# Generate the BedGraph format for nucleosome protection / accessibility
+$ python footprinter.py bedtobedgraph \
+  -bed [footprint.bed | accessible.bed] \
+  -output [Output.bed] \
+  -name [NameOftheTrack] # Default=Fraction
 
 [Optional]
 # Train probability model using methylated gDNA control sample
