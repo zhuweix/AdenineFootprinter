@@ -13,12 +13,13 @@
 
 </p>
 
-## Example Output BAM File in IGV
+## Example Output File in IGV
 ![image](./example/figure/example_igv.png)
 > Detailed specifications in Output File Format
 > BAM Output: Nucleosome regions are indicated as substitutions (red blocks), nucleosome regions, ambiguous regions
 > are indicated as deletions and accessible regions are indicated as match regions (grey blocks). The methyladenosine 
 > sites are indicated as insertion sites.
+> 
 > BED Format: Each line represented one consensus read. The nucleosome regions and accessible regions are indicated as
 > blocks within each line.
 
@@ -35,16 +36,16 @@
 
 ## How To Use
 
-To clone and run this application, you'll need [pysam](https://pysam.readthedocs.io/), [Biopython](https://biopython.org/), [numpy](https://numpy.org/doc/stable/index.html), [statsmodels](https://www.statsmodels.org/dev/user-guide.html)
+To clone and run this application, you'll need [pysam](https://pysam.readthedocs.io/), [Biopython](https://biopython.org/), [numpy](https://numpy.org/doc/stable/index.html), [pandas](https://pandas.pydata.org/docs/index.html), [statsmodels](https://www.statsmodels.org/dev/user-guide.html)
 
 ```bash
 # Clone this repository
 $ git clone https://github.com/zhuweix/AdenineFootprinter.git
 
 # Install dependencies using Conda
-$ conda install numpy,scipy
+$ conda install numpy scipy pandas
 $ conda install -c conda-forge statsmodels
-$ conda install -c bioconda pysam,biopython
+$ conda install -c bioconda pysam biopython
 
 # Go into the repository
 $ cd AdeineFootprinter
@@ -59,6 +60,11 @@ $ footprinter index \
 
 # Analyze nucleosome footprint
 # Using default model
+# [Recommend] Using BAM file from the Methyladenosine Finder (https://github.com/zhuweix/MethyladenosineFinder.git)
+$ footprinter predict \
+  --bam [m6asites.bam] \
+  --output [footprint.bam] 
+# [Alternative] Using BED file
 $ footprinter predict \
   --bed [m6asites.bed] \
   --output [footprint.bam] 
@@ -72,6 +78,7 @@ $ footprinter bamtobed \
 # Generate the BedGraph format for nucleosome protection / accessibility
 $ footprinter bedtobedgraph \
   --bed [footprint.bed | accessible.bed] \
+  --ref [reference_index.data] \
   --output [Output.bed] \
   --name [NameOftheTrack] # Default=Fraction
 
@@ -80,7 +87,7 @@ $ footprinter bedtobedgraph \
 $ footprinter train --bed [m6asites.bed] --window [window_size] --prefix [output_prefix]
 
 # Analyze nucleosome footprint using user-control
-$ footprinter predict --window [window_size] --model [output_prefix.json] --bed [m6asites.bed] --output [footprint.bam] 
+$ footprinter predict --model [output_prefix.json] --bed [m6asites.bed] --output [footprint.bam] 
 
 [Example]
 # This example analyzed nucleosome footprints in S.cerevisiae using example methylated adenine sites
@@ -90,13 +97,16 @@ $ footprinter predict --window [window_size] --model [output_prefix.json] --bed 
 $ footprinter index -r ./example/sacCer3.fa -o ./example/sacCer3.adenine.data
 
 # Analyze nucleosome footprint
+# [Recommend] Using BAM file from the Methyladenosine Finder (https://github.com/zhuweix/MethyladenosineFinder.git)
+$ footprinter predict --bam ./example/example_nuclei.bam --output ./example/example.footprint.bam
+# [Alternative] Using BED Format as input for more general usage
 $ footprinter predict --bed ./example/example_nuclei.bed --output ./example/example.footprint.bam
 
 # Optional: train model from methylated gDNA  control
 $ footprinter train --bed ./example/example_gDNA.bed --window 25 --fp 0.01 --ref ./example/sacCer3.adenine.data  --prefix ./example/model
 
 # Optional: predict data using trained model
-$ footprinter predict --window 25 --model ./example/model.json --bed ./example/example_nuclei.bed --output ./example/example.footprint.bam
+$ footprinter predict --model ./example/model.json --bed ./example/example_nuclei.bed --output ./example/example.footprint.bam
 
 
 ```
