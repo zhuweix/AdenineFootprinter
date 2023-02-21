@@ -1,6 +1,8 @@
 *.ipynb
 .DS_store
 .ipynb_checkpoints/
+.idea/
+test/
 workspace.code-workspace
 
 # Byte-compiled / optimized / DLL files
