@@ -30,7 +30,7 @@ setup(
     package_data={"": ["src/asset/*.data", "src/asset/*.png"]},
     packages=find_packages(where="src"),
     python_requires=">=3.7, <4",
-    install_requires=["numpy>-1.19.2",
+    install_requires=["numpy>=1.19.2",
                       "scipy>=1.6.2",
                       'pandas>=1.2.4',
                       "statsmodels>=0.12.2",
