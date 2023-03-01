@@ -65,6 +65,7 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
         }
         for chrom, arr in sorted(ref_dict.items()):
             header['SQ'].append({'LN':len(arr), 'SN': chrom})
+        header = pysam.AlignmentHeader().from_dict(header)
     output = '{}.predict.bam'.format(prefix)
     with pysam.AlignmentFile(output, 'wb', header=header) as obam:
         for fn in bed.split(','):
@@ -108,7 +109,7 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
                     is_acc = np.convolve(is_acc, win_unit, 'same') > 0
                     is_nuc = np.convolve(is_nuc, win_unit, 'same') > 0
 
-                    tmpr = np.zeros(readlength, dtype=np.int) + 2  # low-confidence: del
+                    tmpr = np.zeros_like(is_acc, dtype=np.int) + 2  # low-confidence: del
                     tmpr[is_acc] = 0  # Accessible region: match
                     tmpr[is_nuc] = 8  # nucleosome region: sub; boundary between accessible and nucleosome: nucleosome
                     if filter_acc:
@@ -116,12 +117,12 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
                         if np.sum(tmpr == 0) == 0:
                             no_acc_read += 1
                             continue
-                    new_read = pysam.AlignedSegment()
+                    new_read = pysam.AlignedSegment(header=header)
                     new_read.query_name = qname
                     new_read.reference_start = start
                     new_read.reference_name = chrom
                     new_read.mapping_quality = 50
-                    new_read.query_qualities = [90] * readlength
+
                     # tidy cigar data
                     edgepos = np.where(np.diff(tmpr) != 0)[0]
                     # Filter read with no feature
@@ -150,7 +151,7 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
                                 if len(tmpr) - pos0 <= max_amb_fuse:
                                     tmpr[pos0:] = 8
 
-                    tmpr[mloc] += 1  # label m6A
+                    tmpr[mloc > 0] += 1  # label m6A
 
                     # generate cigar
                     new_cig = []
@@ -197,6 +198,7 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
                             new_cig2.append(pre)
                         new_read.cigartuples = new_cig2
                     obam.write(new_read)
+
     print('Prediction Completed. Results stored in ', output)
     if filter_acc:
         print('Analyzed {} Reads, {} Reads were filtered due to no High-quality accessible regions'.format(all_read,
