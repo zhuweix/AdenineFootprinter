@@ -4,7 +4,6 @@ import json
 import copy
 import subprocess
 import pysam
-import pandas as pd
 
 from .trainmodel import load_ref_file
 from .trainmodel import calc_local_m6A_adj_pvalue

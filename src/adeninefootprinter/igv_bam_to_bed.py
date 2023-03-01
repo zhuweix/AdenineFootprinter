@@ -26,7 +26,7 @@ def igv_bam_to_bed(bam: str, acc: str, nuc: str):
             name = read.query_name
             start = read.reference_start
             tmp_feat = {0: [], 8: []}
-            p = start + 1
+            p = start
             cur_tp = -1
             cur_s = p
             cm6a = 0
@@ -48,7 +48,7 @@ def igv_bam_to_bed(bam: str, acc: str, nuc: str):
                 tmp_feat[cur_tp].append((cur_s, p - 1))
 
             feat_chrom[chrom].append(
-                (name, start + 1, p, tmp_feat))
+                (name, start, p, tmp_feat))
     print('Writing Accessible Regions in ', acc)
     content = ['track name=Accessible description="Accessible Region in Reads" useScore=0']
     for chrom, feats in feat_chrom.items():
@@ -57,12 +57,20 @@ def igv_bam_to_bed(bam: str, acc: str, nuc: str):
             bsize = []
             if len(tmp_feat[0]) == 0:
                 continue
-            for (s, e) in tmp_feat[0]:
+            for i, (s, e) in enumerate(tmp_feat[0]):
+                if i == 0:
+                    if s != start:
+                        bstart.append(0)
+                        bsize.append(0)
                 bstart.append(s - start)
                 bsize.append(e - s + 1)
+                if i == len(tmp_feat[0]) - 1:
+                    if e != end - 1:
+                        bstart.append(end - start - 1)
+                        bsize.append(1)
             content.append(
                 '{chrom}\t{start}\t{end}\t{name}\t0\t.\t{start}\t{end}\t0\t{cblock}\t{bsizes}\t{bstarts}'.format(
-                    chrom=chrom, name=name, start=start - 1, end=end, cblock=len(bsize),
+                    chrom=chrom, name=name, start=start, end=end, cblock=len(bsize),
                     bsizes=','.join(map(str, bsize)), bstarts=','.join(map(str, bstart))
                 ))
     with open(acc, 'w') as filep:
@@ -75,12 +83,20 @@ def igv_bam_to_bed(bam: str, acc: str, nuc: str):
             bsize = []
             if len(tmp_feat[8]) == 0:
                 continue
-            for (s, e) in tmp_feat[8]:
+            for i, (s, e) in enumerate(tmp_feat[8]):
+                if i == 0:
+                    if s != start:
+                        bstart.append(0)
+                        bsize.append(0)
                 bstart.append(s - start)
                 bsize.append(e - s + 1)
+                if i == len(tmp_feat[8]) - 1:
+                    if e != end - 1:
+                        bstart.append(end - start - 1)
+                        bsize.append(1)
             content.append(
                 '{chrom}\t{start}\t{end}\t{name}\t0\t.\t{start}\t{end}\t0\t{cblock}\t{bsizes}\t{bstarts}'.format(
-                    chrom=chrom, name=name, start=start - 1, end=end, cblock=len(bsize),
+                    chrom=chrom, name=name, start=start, end=end, cblock=len(bsize),
                     bsizes=','.join(map(str, bsize)), bstarts=','.join(map(str, bstart))
                 ))
     with open(nuc, 'w') as filep:

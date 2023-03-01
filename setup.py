@@ -34,8 +34,8 @@ setup(
     python_requires=">=3.7, <4",
     install_requires=["numpy",
                       "scipy",
-                      'pandas',
-                      "statsmodels",
+                      'pandas>=1.2.4',
+                      "statsmodels>=0.12.2",
                       'pysam',
                       'biopython'
                       ],
