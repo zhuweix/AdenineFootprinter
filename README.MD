@@ -48,7 +48,8 @@ $ git clone https://github.com/zhuweix/AdenineFootprinter.git
 
 # Install dependencies using Conda
 # Optional: use new conda environment to manage python packages
-$ conda create --name afp 
+$ conda create --name afp python=3.7
+$ conda activate afp
 # Install packages
 $ conda install numpy scipy
 $ conda install -c conda-forge pandas=1.2.4 statsmodels=0.12.2 

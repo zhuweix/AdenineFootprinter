@@ -37,8 +37,8 @@ def main():
     predict.add_argument('--max_amb_fuse', type=int, help=('[Optional] Maximal Length to Fuse Ambiguous Region to '
                                                            'its adjacent nucleosome, Default=150. '
                                                            'Use 0 for no fusion'), default=150)
-    predict.add_argument('--header', type=str, help=('[Optional] Header Info for output BAM File (ONLY for BED input)'
-                                                     'BAM File Header Dict (see pysam documentation) stored by pickle. '
+    predict.add_argument('--header', type=str, help=('[Optional] BAM File whose Header is used for '
+                                                     'output BAM File (ONLY for BED input)'
                                                      'Automated header will be generated if this file is not provided.'
                                                      ), default=None)
     predict.add_argument('--filter_acc', type=str, help=('[Optional] Only Export Reads with at least one '

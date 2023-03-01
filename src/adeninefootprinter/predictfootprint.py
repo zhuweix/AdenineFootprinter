@@ -56,8 +56,8 @@ def predict_footprint_from_bed(bed: str, model: str, prefix: str, ref: str,
     print('Start Prediction of Nucleosome Footprints and Accessible Regions')
     # header info
     if header_file:
-        with open(header_file, 'rb') as filep:
-            header = pickle.load(filep)
+        with pysam.AlignmentFile(header_file, 'rb') as filep:
+            header = filep.header
     else:
         header = {
             'HD': {'VN': '1.0'},
