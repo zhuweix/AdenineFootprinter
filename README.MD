@@ -13,7 +13,7 @@
 
 </p>
 
-## Example Output File in IGV
+## Example Output File in IGV (2.9.2)
 ![image](src/asset/example_igv.png)
 > Detailed specifications in Output File Format
 > BAM Output: Nucleosome regions are indicated as substitutions (red blocks), nucleosome regions, ambiguous regions
