@@ -75,7 +75,7 @@ def igv_bam_to_bed(bam: str, acc: str, nuc: str):
                 ))
     with open(acc, 'w') as filep:
         filep.write('\n'.join(content))
-    print('Writing Nucleosome Regions in ', acc)
+    print('Writing Nucleosome Regions in ', nuc)
     content = ['track name=Nucleosome description="Nucleosome Region in Reads" useScore=0']
     for chrom, feats in feat_chrom.items():
         for name, start, end, tmp_feat in feats:
