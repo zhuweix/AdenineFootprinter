@@ -4,10 +4,12 @@ Setup Model
 
 from setuptools import setup, find_packages
 import pathlib
+import glob
 
 here = pathlib.Path(__file__).parent.resolve()
 
 long_description = (here / "README.MD").read_text(encoding="utf-8")
+asset_files = glob.glob("src/asset/*.*")
 
 setup(
     name="AdenineFootprinter",
@@ -27,8 +29,7 @@ setup(
     ],
     keywords="nucleosome footprint, genome accessibility, methyladenosine, methylated adenine, computational biology",  # Optional
     package_dir={"": "src"},
-    package_data={"": ["src/asset/*.data", "src/asset/*.png"]},
-    packages=find_packages(where="src"),
+    packages=find_packages(where="src"),    
     python_requires=">=3.7, <4",
     install_requires=["numpy>=1.19.2",
                       "scipy>=1.6.2",
@@ -38,6 +39,9 @@ setup(
                       'biopython'
                       ],
     include_package_data=True,
+    data_files=[
+        ('asset', asset_files)
+    ],    
     entry_points={
         'console_scripts': [
             # command = package.module:function
